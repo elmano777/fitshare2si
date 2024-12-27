@@ -1,73 +1,10 @@
-import { pgTable, foreignKey, integer, varchar, unique, date, timestamp, primaryKey, boolean } from "drizzle-orm/pg-core"
+import { pgTable, foreignKey, serial, integer, varchar, unique, timestamp, date, primaryKey, boolean } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 
 
-export const objective = pgTable("objective", {
-	id: integer().primaryKey().notNull(),
-	iddata: integer(),
-	objective: varchar({ length: 200 }),
-}, (table) => [
-	foreignKey({
-			columns: [table.iddata],
-			foreignColumns: [data.id],
-			name: "objective_iddata_fkey"
-		}),
-]);
-
-export const activity = pgTable("activity", {
-	id: integer().primaryKey().notNull(),
-	iddata: integer(),
-	activity: varchar({ length: 20 }),
-}, (table) => [
-	foreignKey({
-			columns: [table.iddata],
-			foreignColumns: [data.id],
-			name: "activity_iddata_fkey"
-		}),
-]);
-
-export const users = pgTable("users", {
-	id: integer().primaryKey().notNull(),
-	name: varchar({ length: 40 }).notNull(),
-	lastNames: varchar("last_names", { length: 40 }).notNull(),
-	email: varchar({ length: 100 }).notNull(),
-	passwordHash: varchar("password_hash", { length: 255 }).notNull(),
-	birthday: date().notNull(),
-	country: varchar({ length: 40 }).notNull(),
-	city: varchar({ length: 40 }).notNull(),
-	registerdate: timestamp({ mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
-}, (table) => [
-	unique("users_email_key").on(table.email),
-]);
-
-export const profile = pgTable("profile", {
-	id: integer().primaryKey().notNull(),
-	idusers: integer(),
-	avatarurl: varchar({ length: 120 }).notNull(),
-	nickname: varchar({ length: 60 }).notNull(),
-}, (table) => [
-	foreignKey({
-			columns: [table.idusers],
-			foreignColumns: [users.id],
-			name: "profile_idusers_fkey"
-		}),
-	unique("profile_idusers_key").on(table.idusers),
-]);
-
-export const data = pgTable("data", {
-	id: integer().primaryKey().notNull(),
-	idusers: integer(),
-}, (table) => [
-	foreignKey({
-			columns: [table.idusers],
-			foreignColumns: [users.id],
-			name: "data_idusers_fkey"
-		}),
-]);
-
 export const habits = pgTable("habits", {
-	id: integer().primaryKey().notNull(),
+	id: serial().primaryKey().notNull(),
 	iddata: integer(),
 	habits: varchar({ length: 80 }),
 }, (table) => [
@@ -78,19 +15,31 @@ export const habits = pgTable("habits", {
 		}),
 ]);
 
+export const activity = pgTable("activity", {
+	id: serial().primaryKey().notNull(),
+	iddata: integer(),
+	activity: varchar({ length: 20 }),
+}, (table) => [
+	foreignKey({
+			columns: [table.iddata],
+			foreignColumns: [data.id],
+			name: "activity_iddata_fkey"
+		}),
+]);
+
 export const keywords = pgTable("keywords", {
-	id: integer().primaryKey().notNull(),
+	id: serial().primaryKey().notNull(),
 	keyword: varchar({ length: 50 }).notNull(),
 }, (table) => [
 	unique("keywords_keyword_key").on(table.keyword),
 ]);
 
 export const progress = pgTable("progress", {
-	id: integer().primaryKey().notNull(),
+	id: serial().primaryKey().notNull(),
 });
 
 export const challenges = pgTable("challenges", {
-	id: integer().primaryKey().notNull(),
+	id: serial().primaryKey().notNull(),
 	idprogress: integer(),
 	name: varchar({ length: 40 }),
 	description: varchar({ length: 100 }),
@@ -111,23 +60,8 @@ export const challenges = pgTable("challenges", {
 		}),
 ]);
 
-export const groups = pgTable("groups", {
-	id: integer().primaryKey().notNull(),
-	name: varchar({ length: 70 }),
-	description: varchar({ length: 200 }),
-	iconUrl: varchar("icon_url", { length: 255 }),
-	createdBy: integer("created_by"),
-	createdAt: timestamp("created_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
-}, (table) => [
-	foreignKey({
-			columns: [table.createdBy],
-			foreignColumns: [users.id],
-			name: "groups_created_by_fkey"
-		}),
-]);
-
 export const achievements = pgTable("achievements", {
-	id: integer().primaryKey().notNull(),
+	id: serial().primaryKey().notNull(),
 	idprogress: integer(),
 	name: varchar({ length: 40 }).notNull(),
 	description: varchar({ length: 200 }),
@@ -149,7 +83,7 @@ export const achievements = pgTable("achievements", {
 ]);
 
 export const routines = pgTable("routines", {
-	id: integer().primaryKey().notNull(),
+	id: serial().primaryKey().notNull(),
 	idprogress: integer(),
 	name: varchar({ length: 50 }).notNull(),
 	description: varchar({ length: 200 }),
@@ -170,15 +104,81 @@ export const routines = pgTable("routines", {
 		}),
 ]);
 
+export const groups = pgTable("groups", {
+	id: serial().primaryKey().notNull(),
+	name: varchar({ length: 70 }),
+	description: varchar({ length: 200 }),
+	iconUrl: varchar("icon_url", { length: 255 }),
+	createdBy: integer("created_by"),
+	createdAt: timestamp("created_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+}, (table) => [
+	foreignKey({
+			columns: [table.createdBy],
+			foreignColumns: [users.id],
+			name: "groups_created_by_fkey"
+		}),
+]);
+
 export const tags = pgTable("tags", {
-	id: integer().primaryKey().notNull(),
+	id: serial().primaryKey().notNull(),
 	tagName: varchar("tag_name", { length: 50 }).notNull(),
 }, (table) => [
 	unique("tags_tag_name_key").on(table.tagName),
 ]);
 
+export const users = pgTable("users", {
+	id: serial().primaryKey().notNull(),
+	name: varchar({ length: 40 }).notNull(),
+	lastNames: varchar("last_names", { length: 40 }).notNull(),
+	email: varchar({ length: 100 }).notNull(),
+	passwordHash: varchar("password_hash", { length: 255 }).notNull(),
+	birthday: date().notNull(),
+	country: varchar({ length: 40 }).notNull(),
+	city: varchar({ length: 40 }).notNull(),
+	registerdate: timestamp({ mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+}, (table) => [
+	unique("users_email_key").on(table.email),
+]);
+
+export const profile = pgTable("profile", {
+	id: serial().primaryKey().notNull(),
+	idusers: integer(),
+	avatarurl: varchar({ length: 120 }).notNull(),
+	nickname: varchar({ length: 60 }).notNull(),
+}, (table) => [
+	foreignKey({
+			columns: [table.idusers],
+			foreignColumns: [users.id],
+			name: "profile_idusers_fkey"
+		}),
+	unique("profile_idusers_key").on(table.idusers),
+]);
+
+export const data = pgTable("data", {
+	id: serial().primaryKey().notNull(),
+	idusers: integer(),
+}, (table) => [
+	foreignKey({
+			columns: [table.idusers],
+			foreignColumns: [users.id],
+			name: "data_idusers_fkey"
+		}),
+]);
+
+export const objective = pgTable("objective", {
+	id: serial().primaryKey().notNull(),
+	iddata: integer(),
+	objective: varchar({ length: 200 }),
+}, (table) => [
+	foreignKey({
+			columns: [table.iddata],
+			foreignColumns: [data.id],
+			name: "objective_iddata_fkey"
+		}),
+]);
+
 export const groupmembers = pgTable("groupmembers", {
-	id: integer().primaryKey().notNull(),
+	id: serial().primaryKey().notNull(),
 	groupId: integer("group_id"),
 	usersId: integer("users_id"),
 	joinedAt: timestamp("joined_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
@@ -196,7 +196,7 @@ export const groupmembers = pgTable("groupmembers", {
 ]);
 
 export const publications = pgTable("publications", {
-	id: integer().primaryKey().notNull(),
+	id: serial().primaryKey().notNull(),
 	name: varchar({ length: 40 }),
 	description: varchar({ length: 200 }),
 	createdBy: integer("created_by"),
@@ -211,7 +211,7 @@ export const publications = pgTable("publications", {
 ]);
 
 export const comentarios = pgTable("comentarios", {
-	id: integer().primaryKey().notNull(),
+	id: serial().primaryKey().notNull(),
 	idpublication: integer(),
 	description: varchar({ length: 200 }),
 	createdBy: integer("created_by"),
@@ -281,23 +281,6 @@ export const habitskeywords = pgTable("habitskeywords", {
 	primaryKey({ columns: [table.habitId, table.keywordId], name: "habitskeywords_pkey"}),
 ]);
 
-export const tagkeywords = pgTable("tagkeywords", {
-	tagId: integer("tag_id").notNull(),
-	keywordId: integer("keyword_id").notNull(),
-}, (table) => [
-	foreignKey({
-			columns: [table.tagId],
-			foreignColumns: [tags.id],
-			name: "tagkeywords_tag_id_fkey"
-		}),
-	foreignKey({
-			columns: [table.keywordId],
-			foreignColumns: [keywords.id],
-			name: "tagkeywords_keyword_id_fkey"
-		}),
-	primaryKey({ columns: [table.tagId, table.keywordId], name: "tagkeywords_pkey"}),
-]);
-
 export const grouptags = pgTable("grouptags", {
 	groupId: integer("group_id").notNull(),
 	tagId: integer("tag_id").notNull(),
@@ -313,6 +296,23 @@ export const grouptags = pgTable("grouptags", {
 			name: "grouptags_tag_id_fkey"
 		}),
 	primaryKey({ columns: [table.groupId, table.tagId], name: "grouptags_pkey"}),
+]);
+
+export const tagkeywords = pgTable("tagkeywords", {
+	tagId: integer("tag_id").notNull(),
+	keywordId: integer("keyword_id").notNull(),
+}, (table) => [
+	foreignKey({
+			columns: [table.tagId],
+			foreignColumns: [tags.id],
+			name: "tagkeywords_tag_id_fkey"
+		}),
+	foreignKey({
+			columns: [table.keywordId],
+			foreignColumns: [keywords.id],
+			name: "tagkeywords_keyword_id_fkey"
+		}),
+	primaryKey({ columns: [table.tagId, table.keywordId], name: "tagkeywords_pkey"}),
 ]);
 
 export const publicationtags = pgTable("publicationtags", {
