@@ -9,11 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-    constructor(@Inject(DRIZZLE) private readonly db: DrizzleInstance, private jwtService: JwtService) { }
-
-    async findAll() {
-        return await this.db.select().from(schema.users);
-    }
+    constructor(@Inject(DRIZZLE) private readonly db: DrizzleInstance, private readonly jwtService: JwtService) { }
 
     async register(dto: RegisterDto) {
         const existingUser = await this.db.query.users.findFirst({
@@ -38,13 +34,9 @@ export class AuthService {
             })
             .returning();
 
-        const token = await this.jwtService.signAsync({
-            sub: newUser[0].id,
-            email: newUser[0].email,
-        });
-
-        return { token };
+        return { userId: newUser[0].id };
     }
+
 
     async login(dto: LoginDto) {
         const user = await this.db.query.users.findFirst({

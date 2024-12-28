@@ -1,5 +1,5 @@
-import { pgTable, foreignKey, serial, integer, varchar, unique, timestamp, date, primaryKey, boolean } from "drizzle-orm/pg-core"
-import { sql } from "drizzle-orm"
+import { pgTable, foreignKey, serial, integer, varchar, unique, timestamp, date, primaryKey, boolean } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
 
 
@@ -9,10 +9,10 @@ export const habits = pgTable("habits", {
 	habits: varchar({ length: 80 }),
 }, (table) => [
 	foreignKey({
-			columns: [table.iddata],
-			foreignColumns: [data.id],
-			name: "habits_iddata_fkey"
-		}),
+		columns: [table.iddata],
+		foreignColumns: [data.id],
+		name: "habits_iddata_fkey"
+	}),
 ]);
 
 export const activity = pgTable("activity", {
@@ -21,10 +21,10 @@ export const activity = pgTable("activity", {
 	activity: varchar({ length: 20 }),
 }, (table) => [
 	foreignKey({
-			columns: [table.iddata],
-			foreignColumns: [data.id],
-			name: "activity_iddata_fkey"
-		}),
+		columns: [table.iddata],
+		foreignColumns: [data.id],
+		name: "activity_iddata_fkey"
+	}),
 ]);
 
 export const keywords = pgTable("keywords", {
@@ -49,15 +49,15 @@ export const challenges = pgTable("challenges", {
 	createdAt: timestamp("created_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 }, (table) => [
 	foreignKey({
-			columns: [table.idprogress],
-			foreignColumns: [progress.id],
-			name: "challenges_idprogress_fkey"
-		}),
+		columns: [table.idprogress],
+		foreignColumns: [progress.id],
+		name: "challenges_idprogress_fkey"
+	}),
 	foreignKey({
-			columns: [table.createdBy],
-			foreignColumns: [users.id],
-			name: "challenges_created_by_fkey"
-		}),
+		columns: [table.createdBy],
+		foreignColumns: [users.id],
+		name: "challenges_created_by_fkey"
+	}),
 ]);
 
 export const achievements = pgTable("achievements", {
@@ -71,15 +71,15 @@ export const achievements = pgTable("achievements", {
 	createdAt: timestamp("created_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 }, (table) => [
 	foreignKey({
-			columns: [table.idprogress],
-			foreignColumns: [progress.id],
-			name: "achievements_idprogress_fkey"
-		}),
+		columns: [table.idprogress],
+		foreignColumns: [progress.id],
+		name: "achievements_idprogress_fkey"
+	}),
 	foreignKey({
-			columns: [table.createdBy],
-			foreignColumns: [users.id],
-			name: "achievements_created_by_fkey"
-		}),
+		columns: [table.createdBy],
+		foreignColumns: [users.id],
+		name: "achievements_created_by_fkey"
+	}),
 ]);
 
 export const routines = pgTable("routines", {
@@ -93,15 +93,15 @@ export const routines = pgTable("routines", {
 	createdAt: timestamp("created_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 }, (table) => [
 	foreignKey({
-			columns: [table.idprogress],
-			foreignColumns: [progress.id],
-			name: "routines_idprogress_fkey"
-		}),
+		columns: [table.idprogress],
+		foreignColumns: [progress.id],
+		name: "routines_idprogress_fkey"
+	}),
 	foreignKey({
-			columns: [table.createdBy],
-			foreignColumns: [users.id],
-			name: "routines_created_by_fkey"
-		}),
+		columns: [table.createdBy],
+		foreignColumns: [users.id],
+		name: "routines_created_by_fkey"
+	}),
 ]);
 
 export const groups = pgTable("groups", {
@@ -113,10 +113,10 @@ export const groups = pgTable("groups", {
 	createdAt: timestamp("created_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 }, (table) => [
 	foreignKey({
-			columns: [table.createdBy],
-			foreignColumns: [users.id],
-			name: "groups_created_by_fkey"
-		}),
+		columns: [table.createdBy],
+		foreignColumns: [users.id],
+		name: "groups_created_by_fkey"
+	}),
 ]);
 
 export const tags = pgTable("tags", {
@@ -142,15 +142,15 @@ export const users = pgTable("users", {
 
 export const profile = pgTable("profile", {
 	id: serial().primaryKey().notNull(),
-	idusers: integer(),
+	idusers: integer().notNull(),
 	avatarurl: varchar({ length: 120 }).notNull(),
 	nickname: varchar({ length: 60 }).notNull(),
 }, (table) => [
 	foreignKey({
-			columns: [table.idusers],
-			foreignColumns: [users.id],
-			name: "profile_idusers_fkey"
-		}),
+		columns: [table.idusers],
+		foreignColumns: [users.id],
+		name: "profile_idusers_fkey"
+	}),
 	unique("profile_idusers_key").on(table.idusers),
 ]);
 
@@ -159,10 +159,10 @@ export const data = pgTable("data", {
 	idusers: integer(),
 }, (table) => [
 	foreignKey({
-			columns: [table.idusers],
-			foreignColumns: [users.id],
-			name: "data_idusers_fkey"
-		}),
+		columns: [table.idusers],
+		foreignColumns: [users.id],
+		name: "data_idusers_fkey"
+	}),
 ]);
 
 export const objective = pgTable("objective", {
@@ -171,10 +171,10 @@ export const objective = pgTable("objective", {
 	objective: varchar({ length: 200 }),
 }, (table) => [
 	foreignKey({
-			columns: [table.iddata],
-			foreignColumns: [data.id],
-			name: "objective_iddata_fkey"
-		}),
+		columns: [table.iddata],
+		foreignColumns: [data.id],
+		name: "objective_iddata_fkey"
+	}),
 ]);
 
 export const groupmembers = pgTable("groupmembers", {
@@ -184,15 +184,15 @@ export const groupmembers = pgTable("groupmembers", {
 	joinedAt: timestamp("joined_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 }, (table) => [
 	foreignKey({
-			columns: [table.groupId],
-			foreignColumns: [groups.id],
-			name: "groupmembers_group_id_fkey"
-		}),
+		columns: [table.groupId],
+		foreignColumns: [groups.id],
+		name: "groupmembers_group_id_fkey"
+	}),
 	foreignKey({
-			columns: [table.usersId],
-			foreignColumns: [users.id],
-			name: "groupmembers_users_id_fkey"
-		}),
+		columns: [table.usersId],
+		foreignColumns: [users.id],
+		name: "groupmembers_users_id_fkey"
+	}),
 ]);
 
 export const publications = pgTable("publications", {
@@ -204,10 +204,10 @@ export const publications = pgTable("publications", {
 	likes: integer(),
 }, (table) => [
 	foreignKey({
-			columns: [table.createdBy],
-			foreignColumns: [users.id],
-			name: "publications_created_by_fkey"
-		}),
+		columns: [table.createdBy],
+		foreignColumns: [users.id],
+		name: "publications_created_by_fkey"
+	}),
 ]);
 
 export const comentarios = pgTable("comentarios", {
@@ -219,15 +219,15 @@ export const comentarios = pgTable("comentarios", {
 	likes: integer(),
 }, (table) => [
 	foreignKey({
-			columns: [table.createdBy],
-			foreignColumns: [users.id],
-			name: "comentarios_created_by_fkey"
-		}),
+		columns: [table.createdBy],
+		foreignColumns: [users.id],
+		name: "comentarios_created_by_fkey"
+	}),
 	foreignKey({
-			columns: [table.idpublication],
-			foreignColumns: [publications.id],
-			name: "comentarios_idpublication_fkey"
-		}),
+		columns: [table.idpublication],
+		foreignColumns: [publications.id],
+		name: "comentarios_idpublication_fkey"
+	}),
 ]);
 
 export const objectivekeywords = pgTable("objectivekeywords", {
@@ -235,16 +235,16 @@ export const objectivekeywords = pgTable("objectivekeywords", {
 	keywordId: integer("keyword_id").notNull(),
 }, (table) => [
 	foreignKey({
-			columns: [table.objectiveId],
-			foreignColumns: [objective.id],
-			name: "objectivekeywords_objective_id_fkey"
-		}),
+		columns: [table.objectiveId],
+		foreignColumns: [objective.id],
+		name: "objectivekeywords_objective_id_fkey"
+	}),
 	foreignKey({
-			columns: [table.keywordId],
-			foreignColumns: [keywords.id],
-			name: "objectivekeywords_keyword_id_fkey"
-		}),
-	primaryKey({ columns: [table.objectiveId, table.keywordId], name: "objectivekeywords_pkey"}),
+		columns: [table.keywordId],
+		foreignColumns: [keywords.id],
+		name: "objectivekeywords_keyword_id_fkey"
+	}),
+	primaryKey({ columns: [table.objectiveId, table.keywordId], name: "objectivekeywords_pkey" }),
 ]);
 
 export const activitykeywords = pgTable("activitykeywords", {
@@ -252,16 +252,16 @@ export const activitykeywords = pgTable("activitykeywords", {
 	keywordId: integer("keyword_id").notNull(),
 }, (table) => [
 	foreignKey({
-			columns: [table.activityId],
-			foreignColumns: [activity.id],
-			name: "activitykeywords_activity_id_fkey"
-		}),
+		columns: [table.activityId],
+		foreignColumns: [activity.id],
+		name: "activitykeywords_activity_id_fkey"
+	}),
 	foreignKey({
-			columns: [table.keywordId],
-			foreignColumns: [keywords.id],
-			name: "activitykeywords_keyword_id_fkey"
-		}),
-	primaryKey({ columns: [table.activityId, table.keywordId], name: "activitykeywords_pkey"}),
+		columns: [table.keywordId],
+		foreignColumns: [keywords.id],
+		name: "activitykeywords_keyword_id_fkey"
+	}),
+	primaryKey({ columns: [table.activityId, table.keywordId], name: "activitykeywords_pkey" }),
 ]);
 
 export const habitskeywords = pgTable("habitskeywords", {
@@ -269,16 +269,16 @@ export const habitskeywords = pgTable("habitskeywords", {
 	keywordId: integer("keyword_id").notNull(),
 }, (table) => [
 	foreignKey({
-			columns: [table.habitId],
-			foreignColumns: [habits.id],
-			name: "habitskeywords_habit_id_fkey"
-		}),
+		columns: [table.habitId],
+		foreignColumns: [habits.id],
+		name: "habitskeywords_habit_id_fkey"
+	}),
 	foreignKey({
-			columns: [table.keywordId],
-			foreignColumns: [keywords.id],
-			name: "habitskeywords_keyword_id_fkey"
-		}),
-	primaryKey({ columns: [table.habitId, table.keywordId], name: "habitskeywords_pkey"}),
+		columns: [table.keywordId],
+		foreignColumns: [keywords.id],
+		name: "habitskeywords_keyword_id_fkey"
+	}),
+	primaryKey({ columns: [table.habitId, table.keywordId], name: "habitskeywords_pkey" }),
 ]);
 
 export const grouptags = pgTable("grouptags", {
@@ -286,16 +286,16 @@ export const grouptags = pgTable("grouptags", {
 	tagId: integer("tag_id").notNull(),
 }, (table) => [
 	foreignKey({
-			columns: [table.groupId],
-			foreignColumns: [groups.id],
-			name: "grouptags_group_id_fkey"
-		}),
+		columns: [table.groupId],
+		foreignColumns: [groups.id],
+		name: "grouptags_group_id_fkey"
+	}),
 	foreignKey({
-			columns: [table.tagId],
-			foreignColumns: [tags.id],
-			name: "grouptags_tag_id_fkey"
-		}),
-	primaryKey({ columns: [table.groupId, table.tagId], name: "grouptags_pkey"}),
+		columns: [table.tagId],
+		foreignColumns: [tags.id],
+		name: "grouptags_tag_id_fkey"
+	}),
+	primaryKey({ columns: [table.groupId, table.tagId], name: "grouptags_pkey" }),
 ]);
 
 export const tagkeywords = pgTable("tagkeywords", {
@@ -303,16 +303,16 @@ export const tagkeywords = pgTable("tagkeywords", {
 	keywordId: integer("keyword_id").notNull(),
 }, (table) => [
 	foreignKey({
-			columns: [table.tagId],
-			foreignColumns: [tags.id],
-			name: "tagkeywords_tag_id_fkey"
-		}),
+		columns: [table.tagId],
+		foreignColumns: [tags.id],
+		name: "tagkeywords_tag_id_fkey"
+	}),
 	foreignKey({
-			columns: [table.keywordId],
-			foreignColumns: [keywords.id],
-			name: "tagkeywords_keyword_id_fkey"
-		}),
-	primaryKey({ columns: [table.tagId, table.keywordId], name: "tagkeywords_pkey"}),
+		columns: [table.keywordId],
+		foreignColumns: [keywords.id],
+		name: "tagkeywords_keyword_id_fkey"
+	}),
+	primaryKey({ columns: [table.tagId, table.keywordId], name: "tagkeywords_pkey" }),
 ]);
 
 export const publicationtags = pgTable("publicationtags", {
@@ -320,16 +320,16 @@ export const publicationtags = pgTable("publicationtags", {
 	tagId: integer("tag_id").notNull(),
 }, (table) => [
 	foreignKey({
-			columns: [table.publicationId],
-			foreignColumns: [publications.id],
-			name: "publicationtags_publication_id_fkey"
-		}),
+		columns: [table.publicationId],
+		foreignColumns: [publications.id],
+		name: "publicationtags_publication_id_fkey"
+	}),
 	foreignKey({
-			columns: [table.tagId],
-			foreignColumns: [tags.id],
-			name: "publicationtags_tag_id_fkey"
-		}),
-	primaryKey({ columns: [table.publicationId, table.tagId], name: "publicationtags_pkey"}),
+		columns: [table.tagId],
+		foreignColumns: [tags.id],
+		name: "publicationtags_tag_id_fkey"
+	}),
+	primaryKey({ columns: [table.publicationId, table.tagId], name: "publicationtags_pkey" }),
 ]);
 
 export const have = pgTable("have", {
@@ -339,14 +339,14 @@ export const have = pgTable("have", {
 	isCompleted: boolean("is_completed"),
 }, (table) => [
 	foreignKey({
-			columns: [table.idusers],
-			foreignColumns: [users.id],
-			name: "have_idusers_fkey"
-		}),
+		columns: [table.idusers],
+		foreignColumns: [users.id],
+		name: "have_idusers_fkey"
+	}),
 	foreignKey({
-			columns: [table.idprogress],
-			foreignColumns: [progress.id],
-			name: "have_idprogress_fkey"
-		}),
-	primaryKey({ columns: [table.idprogress, table.idusers], name: "have_pkey"}),
+		columns: [table.idprogress],
+		foreignColumns: [progress.id],
+		name: "have_idprogress_fkey"
+	}),
+	primaryKey({ columns: [table.idprogress, table.idusers], name: "have_pkey" }),
 ]);

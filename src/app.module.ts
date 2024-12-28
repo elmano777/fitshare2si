@@ -6,8 +6,9 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { GroupsModule } from './groups/groups.module';
 import { DataModule } from './data/data.module';
 import { ProgressModule } from './progress/progress.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), DbModule, AuthModule, DashboardModule, GroupsModule, DataModule, ProgressModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), DbModule, AuthModule, DashboardModule, GroupsModule, DataModule, ProgressModule, ProfileModule],
 })
 export class AppModule { }
