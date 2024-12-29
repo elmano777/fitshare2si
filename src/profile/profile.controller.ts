@@ -1,19 +1,15 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { ProfileDto } from './dto/profile.dto';
+import { Body, Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { ProfileDto, ProfileResponseDto } from './dto/profile.dto';
+import { ProfileService } from './profile.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('profile')
 export class ProfileController {
-    profileService: any;
+    constructor(private readonly prfileservice: ProfileService) { }
+
     @Post("")
-    async createProfile(@Body() dto: ProfileDto): Promise<{
-        token: string;
-        profile: {
-            id: number;
-            idusers: number;
-            avatarurl: string;
-            nickname: string;
-        };
-    }> {
-        return await this.profileService.createProfile(dto);
+    @UseInterceptors(FileInterceptor("avatar"))
+    async createProfile(@Body() dto: ProfileDto, @UploadedFile() file: Express.Multer.File): Promise<ProfileResponseDto> {
+        return await this.prfileservice.createProfile(dto, file);
     }
 }

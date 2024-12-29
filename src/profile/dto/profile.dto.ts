@@ -1,9 +1,14 @@
 export interface ProfileDto {
     idUsers: number;
-    avatarUrl: string;
     nickname: string;
 }
 
 export interface ProfileResponseDto {
     token: string;
+    profile: {
+        id: number;
+        idusers: number;
+        avatarUrl: string;
+        nickname: string;
+    };
 }
