@@ -6,6 +6,7 @@ import { DbModule } from '../db/db.module';
 import { AuthController } from './auth.controller';
 import { ProfileModule } from 'src/profile/profile.module';
 import { EventsModule } from 'src/events/events.module';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { EventsModule } from 'src/events/events.module';
     DbModule,
     ProfileModule,
     EventsModule,
+    PassportModule.register({ defaultStrategy: 'google' }),
   ],
   providers: [AuthService],
   controllers: [AuthController],

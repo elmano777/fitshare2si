@@ -49,6 +49,44 @@ export class AuthService {
     return { userId: newUser[0].id };
   }
 
+  async googleLogin(user: any) {
+    if (!user) {
+      throw new UnauthorizedException('Usuario no autenticado con Google');
+    }
+
+    const existingUser = await this.db.query.users.findFirst({
+      where: eq(schema.users.email, user.email),
+    });
+
+    if (existingUser) {
+      const token = await this.jwtService.signAsync({
+        sub: existingUser.id,
+        email: existingUser.email,
+      });
+      return { token };
+    }
+
+    const newUser = await this.db
+      .insert(schema.users)
+      .values({
+        name: user.firstName,
+        lastNames: user.lastName || '',
+        email: user.email,
+        passwordHash: null,
+        birthday: null,
+        country: null,
+        city: null,
+      })
+      .returning();
+
+    const token = await this.jwtService.signAsync({
+      sub: newUser[0].id,
+      email: newUser[0].email,
+    });
+
+    return { token };
+  }
+
   async login(dto: LoginDto) {
     const user = await this.db.query.users.findFirst({
       where: eq(schema.users.email, dto.email),
