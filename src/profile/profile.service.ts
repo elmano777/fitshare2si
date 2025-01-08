@@ -6,15 +6,16 @@ import * as schema from 'src/db/schema';
 import { ProfileDto, ProfileResponseDto } from './dto/profile.dto';
 import { JwtService } from '@nestjs/jwt';
 import * as AWS from 'aws-sdk';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ProfileService {
-    constructor(@Inject(DRIZZLE) private readonly db: DrizzleInstance, private readonly jwtService: JwtService) { }
+    constructor(@Inject(DRIZZLE) private readonly db: DrizzleInstance, private readonly jwtService: JwtService, private readonly configservice: ConfigService) { }
 
-    AWS_S3_BUCKET = 'demo-nest';
+    AWS_S3_BUCKET = this.configservice.get<string>('AWS_S3_BUCKET');
     s3 = new AWS.S3({
-        accessKeyId: 'AKIAVD23BXxxxxxxxxxx',
-        secretAccessKey: 'uwVxyznsJ7PAfgQv4dZBQ5TuZxxxxxxxxxxxxxxx',
+        accessKeyId: this.configservice.get<string>("AWS_ACCESS"),
+        secretAccessKey: this.configservice.get<string>("AWS_SECRET"),
     });
 
     async createProfile(dto: ProfileDto, file: Express.Multer.File): Promise<ProfileResponseDto> {
