@@ -6,58 +6,71 @@ import { LoginDto, RegisterDto } from './dto/auth.dto';
 import { eq } from 'drizzle-orm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { UserCreatedEvent } from './events/user-created.event';
 
 @Injectable()
 export class AuthService {
-    constructor(@Inject(DRIZZLE) private readonly db: DrizzleInstance, private readonly jwtService: JwtService) { }
+  constructor(
+    @Inject(DRIZZLE) private readonly db: DrizzleInstance,
+    private readonly jwtService: JwtService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
-    async register(dto: RegisterDto) {
-        const existingUser = await this.db.query.users.findFirst({
-            where: eq(schema.users.email, dto.email),
-        });
+  async register(dto: RegisterDto) {
+    const existingUser = await this.db.query.users.findFirst({
+      where: eq(schema.users.email, dto.email),
+    });
 
-        if (existingUser) {
-            throw new UnauthorizedException('El email ya está registrado');
-        }
-
-        const hashedPassword = await bcrypt.hash(dto.password_hash, 10);
-
-        const newUser = await this.db.insert(schema.users)
-            .values({
-                name: dto.name,
-                lastNames: dto.last_names,
-                email: dto.email,
-                passwordHash: hashedPassword,
-                birthday: new Date(dto.birthday).toISOString().split('T')[0],
-                country: dto.country,
-                city: dto.city,
-            })
-            .returning();
-
-        return { userId: newUser[0].id };
+    if (existingUser) {
+      throw new UnauthorizedException('El email ya está registrado');
     }
 
+    const hashedPassword = await bcrypt.hash(dto.password_hash, 10);
 
-    async login(dto: LoginDto) {
-        const user = await this.db.query.users.findFirst({
-            where: eq(schema.users.email, dto.email),
-        });
+    const newUser = await this.db
+      .insert(schema.users)
+      .values({
+        name: dto.name,
+        lastNames: dto.last_names,
+        email: dto.email,
+        passwordHash: hashedPassword,
+        birthday: new Date(dto.birthday).toISOString().split('T')[0],
+        country: dto.country,
+        city: dto.city,
+      })
+      .returning();
 
-        if (!user) {
-            throw new UnauthorizedException('Credenciales inválidas');
-        }
+    const event = new UserCreatedEvent();
+    event.name = newUser[0].name;
+    this.eventEmitter.emit('user.created', event);
 
-        const isPasswordValid = await bcrypt.compare(dto.password, user.passwordHash);
+    return { userId: newUser[0].id };
+  }
 
-        if (!isPasswordValid) {
-            throw new UnauthorizedException('Credenciales inválidas');
-        }
+  async login(dto: LoginDto) {
+    const user = await this.db.query.users.findFirst({
+      where: eq(schema.users.email, dto.email),
+    });
 
-        const token = await this.jwtService.signAsync({
-            sub: user.id,
-            email: user.email,
-        });
-
-        return { token };
+    if (!user) {
+      throw new UnauthorizedException('Credenciales inválidas');
     }
+
+    const isPasswordValid = await bcrypt.compare(
+      dto.password,
+      user.passwordHash,
+    );
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Credenciales inválidas');
+    }
+
+    const token = await this.jwtService.signAsync({
+      sub: user.id,
+      email: user.email,
+    });
+
+    return { token };
+  }
 }

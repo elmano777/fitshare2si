@@ -7,8 +7,9 @@ import { GroupsModule } from './groups/groups.module';
 import { DataModule } from './data/data.module';
 import { ProgressModule } from './progress/progress.module';
 import { ProfileModule } from './profile/profile.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), DbModule, AuthModule, DashboardModule, GroupsModule, DataModule, ProgressModule, ProfileModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), DbModule, AuthModule, DashboardModule, GroupsModule, DataModule, ProgressModule, ProfileModule, EventEmitterModule.forRoot()],
 })
 export class AppModule { }

@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DbModule } from '../db/db.module';
 import { AuthController } from './auth.controller';
 import { ProfileModule } from 'src/profile/profile.module';
+import { UserCreatedListener } from './listeners/user-created.listener';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { ProfileModule } from 'src/profile/profile.module';
     DbModule,
     ProfileModule,
   ],
-  providers: [AuthService],
+  providers: [AuthService, UserCreatedListener],
   controllers: [AuthController],
 })
-export class AuthModule { }
+export class AuthModule {}
