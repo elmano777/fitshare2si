@@ -6,15 +6,14 @@ import { LoginDto, RegisterDto } from './dto/auth.dto';
 import { eq } from 'drizzle-orm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { UserCreatedEvent } from './events/user-created.event';
+import { EventsService } from 'src/events/events.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject(DRIZZLE) private readonly db: DrizzleInstance,
     private readonly jwtService: JwtService,
-    private readonly eventEmitter: EventEmitter2,
+    private readonly eventService: EventsService,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -41,9 +40,11 @@ export class AuthService {
       })
       .returning();
 
-    const event = new UserCreatedEvent();
-    event.name = newUser[0].name;
-    this.eventEmitter.emit('user.created', event);
+    const to = dto.email;
+    const subject = 'Bienvenido a la aplicación';
+    const text = `Hola ${dto.name}, gracias por registrarte en nuestra aplicación.`;
+
+    await this.eventService.sendMail(to, subject, text);
 
     return { userId: newUser[0].id };
   }

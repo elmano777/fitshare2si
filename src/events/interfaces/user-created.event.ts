@@ -1,3 +1,3 @@
 export class UserCreatedEvent {
-    name: string;
+  name: string;
 }
