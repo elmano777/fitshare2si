@@ -10,10 +10,10 @@ import { DbModule } from 'src/db/db.module';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>("JWT_SECRET"),
-        signOptions: { expiresIn: '1h' }
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1h' },
       }),
-      inject: [ConfigService]
+      inject: [ConfigService],
     }),
     DbModule,
   ],
@@ -21,4 +21,4 @@ import { DbModule } from 'src/db/db.module';
   providers: [ProfileService],
   exports: [ProfileService],
 })
-export class ProfileModule { }
+export class ProfileModule {}

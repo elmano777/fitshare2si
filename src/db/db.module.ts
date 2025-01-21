@@ -8,22 +8,24 @@ import { DrizzleInstance } from './types/drizzle.types';
 export const DRIZZLE = Symbol('drizzle-connection');
 
 @Module({
-    providers: [
-        {
-            provide: DRIZZLE,
-            inject: [ConfigService],
-            useFactory: async (configService: ConfigService): Promise<DrizzleInstance> => {
-                const databaseURL = configService.get<string>('DATABASE_URL');
+  providers: [
+    {
+      provide: DRIZZLE,
+      inject: [ConfigService],
+      useFactory: async (
+        configService: ConfigService,
+      ): Promise<DrizzleInstance> => {
+        const databaseURL = configService.get<string>('DATABASE_URL');
 
-                const pool = new Pool({
-                    connectionString: databaseURL,
-                    ssl: process.env.NODE_ENV === 'production' ? true : false,
-                });
+        const pool = new Pool({
+          connectionString: databaseURL,
+          ssl: process.env.NODE_ENV === 'production' ? true : false,
+        });
 
-                return drizzle(pool, { schema });
-            },
-        },
-    ],
-    exports: [DRIZZLE],
+        return drizzle(pool, { schema });
+      },
+    },
+  ],
+  exports: [DRIZZLE],
 })
-export class DbModule { }
+export class DbModule {}

@@ -11,6 +11,17 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EventsModule } from './events/events.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), DbModule, AuthModule, DashboardModule, GroupsModule, DataModule, ProgressModule, ProfileModule, EventEmitterModule.forRoot(), EventsModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    DbModule,
+    AuthModule,
+    DashboardModule,
+    GroupsModule,
+    DataModule,
+    ProgressModule,
+    ProfileModule,
+    EventEmitterModule.forRoot(),
+    EventsModule,
+  ],
 })
-export class AppModule { }
+export class AppModule {}
