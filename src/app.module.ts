@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { DbModule } from './db/db.module';
 import { AuthModule } from './auth/auth.module';
@@ -9,8 +9,17 @@ import { ProgressModule } from './progress/progress.module';
 import { ProfileModule } from './profile/profile.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EventsModule } from './events/events.module';
+import { AuthMiddleware } from './auth/auth.middleware';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/auth.guard';
 
 @Module({
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     DbModule,
@@ -24,4 +33,8 @@ import { EventsModule } from './events/events.module';
     EventsModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).exclude('auth').forRoutes('*');
+  }
+}

@@ -5,6 +5,7 @@ import {
   HttpCode,
   Post,
   Req,
+  SetMetadata,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -19,6 +20,7 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(201)
+  @SetMetadata('no-auth', true)
   register(@Body() dto: RegisterDto): Promise<{
     userId: number;
   }> {
@@ -27,16 +29,19 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(200)
+  @SetMetadata('no-auth', true)
   login(@Body() dto: LoginDto): Promise<{ token: string }> {
     return this.authService.login(dto);
   }
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
+  @SetMetadata('no-auth', true)
   googleAuth() {}
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
+  @SetMetadata('no-auth', true)
   async googleAuthRedirect(
     @Req() req: Request & { user: GoogleDto },
   ): Promise<{ token: string }> {
