@@ -12,6 +12,7 @@ import { EventsModule } from './events/events.module';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
+import { UsersModule } from './users/users.module';
 
 @Module({
   providers: [
@@ -31,6 +32,7 @@ import { AuthGuard } from './auth/auth.guard';
     ProfileModule,
     EventEmitterModule.forRoot(),
     EventsModule,
+    UsersModule,
   ],
 })
 export class AppModule implements NestModule {

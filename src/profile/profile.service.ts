@@ -7,6 +7,7 @@ import { ProfileDto, ProfileResponseDto } from './dto/profile.dto';
 import { JwtService } from '@nestjs/jwt';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ProfileService {
@@ -72,9 +73,15 @@ export class ProfileService {
   }
 
   async uploadFile(file: Express.Multer.File) {
-    console.log(file);
     const fileExt = file.originalname.split('.').pop();
-    const uniqueName = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${fileExt}gaaaaa`;
+    const validExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+    if (!fileExt || !validExtensions.includes(fileExt.toLowerCase())) {
+      throw new Error('Tipo de archivo no permitido');
+    }
+
+    const datePrefix = new Date().toISOString().split('T')[0];
+    const uniqueName = `${datePrefix}/${uuidv4()}.${fileExt}`;
 
     return await this.s3_upload(
       file.buffer,
