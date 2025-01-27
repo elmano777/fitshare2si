@@ -21,7 +21,7 @@ export class ProfileService {
   ) {
     this.AWS_S3_BUCKET = this.configService.get<string>('AWS_S3_BUCKET');
     this.s3Client = new S3Client({
-      region: 'us-east-2',
+      region: 'us-east-1',
       credentials: {
         accessKeyId: this.configService.get<string>('AWS_ACCESS'),
         secretAccessKey: this.configService.get<string>('AWS_SECRET'),
@@ -33,18 +33,27 @@ export class ProfileService {
     dto: ProfileDto,
     file: Express.Multer.File,
   ): Promise<ProfileResponseDto> {
-    const existingProfile = await this.db.query.profile.findFirst({
-      where: eq(schema.profile.idusers, dto.idUsers),
+    console.log('Buscando usuario con ID:', dto.idUsers);
+
+    const user = await this.db.query.users.findFirst({
+      where: eq(schema.users.id, dto.idUsers),
+      columns: {
+        id: true,
+        name: true,
+        email: true,
+      },
     });
 
-    if (existingProfile) {
-      throw new Error('El perfil ya existe para este usuario');
+    console.log('Resultado de la búsqueda:', user);
+
+    if (!user) {
+      throw new Error('El usuario no existe');
     }
 
     let avatarUrl = '';
     if (file) {
       const uploadResult = await this.uploadFile(file);
-      avatarUrl = `https://${this.AWS_S3_BUCKET}.s3.us-east-2.amazonaws.com/${uploadResult.Key}`;
+      avatarUrl = `https://${this.AWS_S3_BUCKET}.s3.us-east-1.amazonaws.com/${uploadResult.Key}`;
     }
 
     const newProfile = await this.db
@@ -59,16 +68,13 @@ export class ProfileService {
     const token = await this.jwtService.signAsync({
       sub: newProfile[0].id,
       nickname: dto.nickname,
+      id: newProfile[0].id,
+      idusers: dto.idUsers,
+      avatarUrl,
     });
 
     return {
       token,
-      profile: {
-        id: newProfile[0].id,
-        idusers: dto.idUsers,
-        avatarUrl,
-        nickname: dto.nickname,
-      },
     };
   }
 

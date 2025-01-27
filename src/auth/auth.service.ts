@@ -90,6 +90,7 @@ export class AuthService {
   async login(dto: LoginDto) {
     const user = await this.db.query.users.findFirst({
       where: eq(schema.users.email, dto.email),
+      with: { profile: true },
     });
 
     if (!user) {
@@ -108,6 +109,8 @@ export class AuthService {
     const token = await this.jwtService.signAsync({
       sub: user.id,
       email: user.email,
+      nickname: user.profile?.nickname || null,
+      avatarUrl: user.profile?.avatarurl || null,
     });
 
     return { token };

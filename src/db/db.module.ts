@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Pool } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import * as schema from './schema';
+import * as relations from './relations';
 import { DrizzleInstance } from './types/drizzle.types';
 
 export const DRIZZLE = Symbol('drizzle-connection');
@@ -22,7 +23,12 @@ export const DRIZZLE = Symbol('drizzle-connection');
           ssl: process.env.NODE_ENV === 'production' ? true : false,
         });
 
-        return drizzle(pool, { schema });
+        return drizzle(pool, {
+          schema: {
+            ...schema,
+            ...relations,
+          },
+        });
       },
     },
   ],

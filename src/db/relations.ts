@@ -69,12 +69,15 @@ export const progressRelations = relations(progress, ({ many }) => ({
   have: many(have),
 }));
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ many, one }) => ({
   challenges: many(challenges),
   achievements: many(achievements),
   routines: many(routines),
   groups: many(groups),
-  profiles: many(profile),
+  profile: one(profile, {
+    fields: [users.id],
+    references: [profile.idusers],
+  }),
   data: many(data),
   groupmembers: many(groupmembers),
   publications: many(publications),
